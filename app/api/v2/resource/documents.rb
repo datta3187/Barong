@@ -33,7 +33,7 @@ module API::V2
                    allow_blank: false,
                    desc: 'Document number'
           requires :upload,
-                   desc: 'Array of Rack::Multipart::UploadedFile'
+                   desc: 'Rack::Multipart::UploadedFile'
           optional :doc_expire,
                    type: { value: Date, message: "resource.documents.expire_not_a_date" },
                    allow_blank: false,
@@ -56,11 +56,10 @@ module API::V2
             error!({ errors: ['resource.documents.limit_will_be_reached'] }, 400)
           end
 
-          params[:upload].each do |file|
-            doc = current_user.documents.new(declared(params).except(:upload).merge(upload: file))
+          doc = current_user.documents.new(declared(params))
 
-            code_error!(doc.errors.details, 400) unless doc.save
-          end
+          code_error!(doc.errors.details, 400) unless doc.save
+
           status 201
 
         rescue Excon::Error => e
