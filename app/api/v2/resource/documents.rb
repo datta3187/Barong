@@ -56,11 +56,11 @@ module API::V2
             error!({ errors: ['resource.documents.limit_will_be_reached'] }, 400)
           end
 
-          params[:upload].each do |file|
-            doc = current_user.documents.new(declared(params).except(:upload).merge(upload: file))
+          # params[:upload].each do |file|
+            doc = current_user.documents.new(declared(params).except(:upload).merge(upload: params[:upload]))
 
             code_error!(doc.errors.details, 400) unless doc.save
-          end
+          # end
           status 201
 
         rescue Excon::Error => e

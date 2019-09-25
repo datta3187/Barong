@@ -13,6 +13,7 @@ module API
         expose :level, documentation: { type: 'Integer' }
         expose :otp, documentation: { type: 'Boolean', desc: 'is 2FA enabled for account' }
         expose :state, documentation: { type: 'String' }
+        # expose :refid, documentation: { type: 'String' }
       end
     end
   end

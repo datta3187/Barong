@@ -31,3 +31,8 @@
 
 en:
   hello: "Hello world"
+  setting: 
+    email: 'Your email adress has been verified successfully, remember and protect this e-mail address, it is the single certificate for your account'
+    password: 'This password is required for login, please remember it.'
+    google_auth: 'Used for withdrawals and security modifications.'
+    sms_auth": 'Used for withdrawals and security modifications.'
