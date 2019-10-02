@@ -33,7 +33,7 @@ module API::V2
                    allow_blank: false,
                    desc: 'Document number'
           requires :upload,
-                   desc: 'Array of Rack::Multipart::UploadedFile'
+                   desc: 'Rack::Multipart::UploadedFile'
           optional :doc_expire,
                    type: { value: Date, message: "resource.documents.expire_not_a_date" },
                    allow_blank: false,
