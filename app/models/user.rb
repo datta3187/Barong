@@ -109,6 +109,6 @@ class User < ApplicationRecord
   end
 
   def random_uid
-    "EXTO#{SecureRandom.hex(5).upcase}"
+    "EX#{SecureRandom.hex(5).upcase}"
   end
 end

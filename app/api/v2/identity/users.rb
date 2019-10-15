@@ -7,7 +7,7 @@ module API::V2
     class Users < Grape::API
       helpers do
         def parse_refid!
-          error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless /\AID\w{10}$/.match?(params[:refid])
+          error!({ errors: ['identity.user.invalid_referral_format'] }, 422) unless /\AEX\w{10}$/.match?(params[:refid])
           user = User.find_by_uid(params[:refid])
           error!({ errors: ['identity.user.referral_doesnt_exist'] }, 422) if user.nil?
 
