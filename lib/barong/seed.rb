@@ -43,7 +43,6 @@ module Barong
 
     def seed_permissions
       logger.info "Seeding permissions"
-      
       seeds["permissions"].each do |perm|
         logger.info "---"
         if Permission.find_by(role: perm["role"], verb: perm["verb"], path: perm["path"], action: perm["action"]).present?
