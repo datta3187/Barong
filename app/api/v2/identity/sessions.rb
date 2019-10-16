@@ -64,7 +64,7 @@ module API::V2
           end
 
           if declared_params[:otp_code].blank?
-            login_error!(reason: 'The account has enabled 2FA but OTP code is missing', error_code: 403,
+            g_auth_login_error!(reason: 'The account has enabled 2FA but OTP code is missing', error_code: 403,
                          user: user.id, action: 'login::2fa', result: 'failed', error_text: 'missing_otp')
           end
 

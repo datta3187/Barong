@@ -63,7 +63,14 @@ module API::V2
         options[:data] = { reason: options[:reason] }.to_json
         options[:topic] = 'session'
         activity_record(options.except(:reason, :error_code, :error_text))
-        error!({ errors: ['identity.session.' + options[:error_text]] }, options[:error_code])
+        error!({ errors: ['identity.session.' + options[:error_text]]}, options[:error_code])
+      end
+
+      def g_auth_login_error!(options = {})
+        options[:data] = { reason: options[:reason] }.to_json
+        options[:topic] = 'session'
+        activity_record(options.except(:reason, :error_code, :error_text))
+        error!({ errors: ['identity.session.' + options[:error_text]], gAuthStatus: 0}, 202)
       end
 
       def activity_record(options = {})
