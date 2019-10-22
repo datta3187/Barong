@@ -42,7 +42,7 @@ module API::V2
 
           profile = current_user.create_profile(declared(params, include_missing: false))
           code_error!(profile.errors.details, 422) if profile.errors.any?
-
+          
           label =
             current_user.labels.new(
               key: 'profile',
@@ -50,7 +50,7 @@ module API::V2
               scope: 'private'
             )
           code_error!(label.errors.details, 422) unless label.save
-
+          current_user.update_level
           status 201
         end
       end
