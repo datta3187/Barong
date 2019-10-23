@@ -26,7 +26,7 @@ CarrierWave.configure do |config|
       provider: 'AWS',
       aws_access_key_id: Barong::App.config.storage_access_key,
       aws_secret_access_key: Barong::App.config.storage_secret_key,
-      region: Barong::App.config.storage_region
+      region: 'ap-southeast-1'
     }
     config.fog_directory = Barong::App.config.storage_bucket_name
   else
