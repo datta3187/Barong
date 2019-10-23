@@ -15,7 +15,7 @@ levels:
     description: "User clicked on the confirmation link"
   - key: profile
     value: verified
-    description: "User entered a valid profile"
+    description: "User entered a valid profile."
   - key: document
     value: verified
     description: "User personal documents have been verified"
