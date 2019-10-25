@@ -18,11 +18,11 @@ module API::V2
       desc 'User related routes'
       resource :users do
         desc 'Creates new user',
-        success: { code: 201, message: 'Creates new user' },
-        failure: [
-          { code: 400, message: 'Required params are missing' },
-          { code: 422, message: 'Validation errors' }
-        ]
+             success: { code: 201, message: 'Creates new user' },
+             failure: [
+                 { code: 400, message: 'Required params are missing' },
+                 { code: 422, message: 'Validation errors' }
+             ]
         params do
           requires :email,
                    type: String,
@@ -67,11 +67,11 @@ module API::V2
 
         namespace :email do
           desc 'Send confirmations instructions',
-          success: { code: 201, message: 'Generated verification code' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' }
-          ]
+               success: { code: 201, message: 'Generated verification code' },
+               failure: [
+                   { code: 400, message: 'Required params are missing' },
+                   { code: 422, message: 'Validation errors' }
+               ]
           params do
             requires :email,
                      type: String,
@@ -92,11 +92,11 @@ module API::V2
           end
 
           desc 'Confirms an account',
-          success: { code: 201, message: 'Confirms an account' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' }
-          ]
+               success: { code: 201, message: 'Confirms an account' },
+               failure: [
+                   { code: 400, message: 'Required params are missing' },
+                   { code: 422, message: 'Validation errors' }
+               ]
           params do
             requires :token,
                      type: String,
@@ -109,9 +109,9 @@ module API::V2
           end
           post '/confirm_code' do
             payload = codec.decode_and_verify(
-              params[:token],
-              pub_key: Barong::App.config.keystore.public_key,
-              sub: 'confirmation'
+                params[:token],
+                pub_key: Barong::App.config.keystore.public_key,
+                sub: 'confirmation'
             )
             current_user = User.find_by_email(payload[:email])
 
@@ -121,10 +121,11 @@ module API::V2
 
             current_user.after_confirmation if token_uniq?(payload[:jti])
 
-            EventAPI.notify('system.user.email.confirmed',
-                            user: current_user.as_json_for_event_api,
-                            language: language,
-                            domain: Barong::App.config.barong_domain)
+            EventAPI.notify('system.user.email.confirmed', record: {
+                user: current_user.as_json_for_event_api,
+                language: language,
+                domain: Barong::App.config.barong_domain
+            })
 
             status 201
           end
@@ -132,12 +133,12 @@ module API::V2
 
         namespace :password do
           desc 'Send password reset instructions',
-          success: { code: 201, message: 'Generated password reset code' },
-          failure: [
-            { code: 400, message: 'Required params are missing' },
-            { code: 422, message: 'Validation errors' },
-            { code: 404, message: 'User doesn\'t exist'}
-          ]
+               success: { code: 201, message: 'Generated password reset code' },
+               failure: [
+                   { code: 400, message: 'Required params are missing' },
+                   { code: 422, message: 'Validation errors' },
+                   { code: 404, message: 'User doesn\'t exist'}
+               ]
           params do
             requires :email,
                      type: String,
@@ -158,21 +159,21 @@ module API::V2
 
             activity_record(user: current_user.id, action: 'request password reset', result: 'succeed', topic: 'password')
 
-            EventAPI.notify('system.user.password.reset.token',
-                            user: current_user.as_json_for_event_api,
-                            language: language,
-                            domain: Barong::App.config.barong_domain,
-                            token: token)
+            EventAPI.notify('system.user.password.reset.token', record: {
+                user: current_user.as_json_for_event_api,
+                language: language,
+                domain: Barong::App.config.barong_domain,
+                token: token})
             status 201
           end
 
           desc 'Sets new account password',
-          success: { code: 201, message: 'Resets password' },
-          failure: [
-            { code: 400, message: 'Required params are empty' },
-            { code: 404, message: 'Record is not found' },
-            { code: 422, message: 'Validation errors' }
-          ]
+               success: { code: 201, message: 'Resets password' },
+               failure: [
+                   { code: 400, message: 'Required params are empty' },
+                   { code: 404, message: 'Record is not found' },
+                   { code: 422, message: 'Validation errors' }
+               ]
           params do
             requires :reset_password_token,
                      type: String,
@@ -199,8 +200,8 @@ module API::V2
             end
 
             payload = codec.decode_and_verify(
-              params[:reset_password_token],
-              pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
+                params[:reset_password_token],
+                pub_key: Barong::App.config.keystore.public_key, sub: 'reset'
             )
             error!({ errors: ['identity.user.utilized_token'] }, 422) if Rails.cache.read(payload[:jti]) == 'utilized'
 
@@ -216,10 +217,11 @@ module API::V2
 
             activity_record(user: current_user.id, action: 'password reset', result: 'succeed', topic: 'password')
 
-            EventAPI.notify('system.user.password.reset',
-                            user: current_user.as_json_for_event_api,
-                            language: language,
-                            domain: Barong::App.config.barong_domain)
+            EventAPI.notify('system.user.password.reset', record: {
+                user: current_user.as_json_for_event_api,
+                language: language,
+                domain: Barong::App.config.barong_domain
+            })
 
             status 201
           end
