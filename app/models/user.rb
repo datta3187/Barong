@@ -25,6 +25,8 @@ class User < ApplicationRecord
 
   before_validation :assign_uid
   after_update :disable_api_keys
+  after_create :ensure_ancestors_series
+  has_ancestry cache_depth: true
 
   def disable_api_keys
     if otp_previously_changed? && otp == false || state_previously_changed? && state != 'active'
@@ -104,11 +106,23 @@ class User < ApplicationRecord
 
     loop do
       self.uid = random_uid
+      self.ancestry = referral_id
       break unless User.where(uid: uid).any?
     end
   end
 
   def random_uid
     "EX#{SecureRandom.hex(5).upcase}"
+  end
+
+  def ensure_ancestors_series
+    str = ''
+    parent = self.parent
+    while parent.present?
+      str = str.blank? ? parent.id.to_s : "#{parent.id.to_s}/#{str}"
+      parent = parent.parent
+    end
+    str = str.split('/')
+    update_columns(ancestry: str.join('/'), ancestry_depth: str.length)
   end
 end
