@@ -100,8 +100,25 @@ class User < ApplicationRecord
     as_json(only: %i[uid email referral_id role level state])
   end
 
+  def trailing_users
+    users = self.class.all
+    count = children.count
+    users = users.select { |k| k.children.count <= count  }
+    (users - users.select { |k| k.children.count == count  && k.created_at <= created_at })
+  end
+
+  def rank_no
+    users = self.class.all
+    count = children.count
+    users = users.select { |k| k.children.count >= count  }
+    (users - users.select { |k| k.children.count == count  && k.created_at > created_at }).count
+  end
+
   def leading_users
-    referred_count = children
+    users = self.class.all
+    count = children.count
+    users = users.select { |k| k.children.count >= count  }
+    (users - users.select { |k| k.children.count == count  && k.created_at >= created_at })
   end
 
   private
