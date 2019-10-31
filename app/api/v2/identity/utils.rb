@@ -95,11 +95,11 @@ module API::V2
       def publish_confirmation(user, language, domain)
         token = codec.encode(sub: 'confirmation', email: user.email, uid: user.uid)
         EventAPI.notify(
-          'system.user.email.confirmation.token',
+          'system.user.email.confirmation.token', record: {
           user: user.as_json_for_event_api,
           language: language,
           domain: domain,
-          token: token
+          token: token }
         )
       end
     end
